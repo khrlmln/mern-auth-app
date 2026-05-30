@@ -1,12 +1,16 @@
-import { loginService, registerService } from "../services/auth.service.js";
+import {
+  loginService,
+  registerService,
+  verifyEmailService,
+} from "../services/auth.service.js";
 import asyncHandler from "../utils/async-handler.js";
 
 export const registerController = asyncHandler(async (req, res, _next) => {
-  const user = await registerService(req.body);
+  const message = await registerService(req.body);
 
   res.status(201).json({
     success: true,
-    data: user,
+    message,
   });
 });
 
@@ -19,10 +23,13 @@ export const loginController = asyncHandler(async (req, res, _next) => {
   });
 });
 
-export const verifyEmailController = asyncHandler(async (req, res, _next) => {
-  res
-    .status(200)
-    .json({ success: true, message: "verifyEmail controller called" });
+export const verifyEmailController = asyncHandler(async (req, res) => {
+  const message = await verifyEmailService(req.query.token);
+
+  res.status(200).json({
+    success: true,
+    message,
+  });
 });
 
 export const getProfileController = asyncHandler(async (req, res, _next) => {
