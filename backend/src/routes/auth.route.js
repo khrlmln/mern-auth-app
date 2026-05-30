@@ -12,6 +12,7 @@ import {
   verifyEmailController,
 } from "../controllers/auth.controller.js";
 
+import authenticate from "../middlewares/auth.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
   changePasswordSchema,
@@ -29,7 +30,7 @@ authRoute.post("/login", validate(loginSchema), loginController);
 
 authRoute.get("/verify-email", verifyEmailController);
 
-authRoute.get("/profile", getProfileController);
+authRoute.get("/profile", authenticate, getProfileController);
 
 authRoute.patch(
   "/change-password",

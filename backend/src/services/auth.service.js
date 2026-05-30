@@ -2,12 +2,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/env.js";
 import { User } from "../models/user.model.js";
+import AppError from "../utils/AppError.js";
 
 export const registerService = async ({ fullName, email, password }) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    throw new Error("User already exists");
+    throw new AppError("User already exists", 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -28,17 +29,17 @@ export const loginService = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new Error("Invalid Email or Password.");
+    throw new AppError("Invalid email or password", 401);
   }
 
   const isPasswordMatched = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatched) {
-    throw new Error("Invalid email or password");
+    throw new AppError("Invalid email or password", 401);
   }
 
   if (!user.isEmailVerified) {
-    throw new Error("Please verify your email first");
+    throw new AppError("Email not verified", 403);
   }
 
   const payload = { id: user._id, role: user.role };
