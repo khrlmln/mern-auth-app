@@ -13,7 +13,7 @@ export const registerController = asyncHandler(async (req, res, _next) => {
 export const loginController = asyncHandler(async (req, res, _next) => {
   const user = await loginService(req.body);
 
-  res.status(201).json({
+  res.status(200).json({
     success: true,
     data: user,
   });

@@ -1,15 +1,13 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/env.js";
+import AppError from "../utils/AppError.js";
 
 const authenticate = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        success: false,
-        message: "Access token required",
-      });
+      throw new AppError("Access token required", 401);
     }
 
     const token = authHeader.split(" ")[1];
@@ -20,10 +18,11 @@ const authenticate = (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: (error.message = "Invalid or expired token"),
-    });
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    throw new AppError("Invalid or expired token", 401);
   }
 };
 
