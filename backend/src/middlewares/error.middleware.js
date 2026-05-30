@@ -1,4 +1,12 @@
-const errorMiddleware = (err, req, res) => {
+const errorMiddleware = (err, req, res, _next) => {
+  if (err.isJoi) {
+    return res.status(400).json({
+      success: false,
+      status: "fail",
+      errors: err.details.map((detail) => detail.message),
+    });
+  }
+
   const statusCode = err.statusCode || 500;
 
   res.status(statusCode).json({
