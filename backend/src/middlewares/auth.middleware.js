@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/env.js";
+import { User } from "../models/user.model.js";
 import AppError from "../utils/AppError.js";
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -14,7 +15,9 @@ const authenticate = (req, res, next) => {
 
     const payload = jwt.verify(token, SECRET_KEY);
 
-    req.user = payload;
+    const user = await User.findById(payload.id);
+
+    req.user = user;
 
     next();
   } catch (error) {

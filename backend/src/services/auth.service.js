@@ -51,8 +51,6 @@ export const loginService = async ({ email, password }) => {
 
 export const verifyEmailService = async () => {};
 
-export const getProfileService = async () => {};
-
 export const changePasswordService = async () => {};
 
 export const logoutService = async () => {};

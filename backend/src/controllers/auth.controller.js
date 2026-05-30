@@ -26,9 +26,10 @@ export const verifyEmailController = asyncHandler(async (req, res, _next) => {
 });
 
 export const getProfileController = asyncHandler(async (req, res, _next) => {
-  res
-    .status(200)
-    .json({ success: true, message: "getProfile controller called" });
+  res.status(200).json({
+    success: true,
+    data: req.user,
+  });
 });
 
 export const changePasswordController = asyncHandler(
