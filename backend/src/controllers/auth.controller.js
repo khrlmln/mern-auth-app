@@ -1,6 +1,12 @@
 import {
+  changePasswordService,
+  forgotPasswordService,
   loginService,
+  logoutService,
+  refreshTokenService,
   registerService,
+  resendVerificationEmailService,
+  resetPasswordService,
   verifyEmailService,
 } from "../services/auth.service.js";
 import asyncHandler from "../utils/async-handler.js";
@@ -32,6 +38,17 @@ export const verifyEmailController = asyncHandler(async (req, res) => {
   });
 });
 
+export const resendVerificationEmailController = asyncHandler(
+  async (req, res) => {
+    const message = await resendVerificationEmailService(req.body.email);
+
+    res.status(200).json({
+      success: true,
+      message,
+    });
+  }
+);
+
 export const getProfileController = asyncHandler(async (req, res, _next) => {
   res.status(200).json({
     success: true,
@@ -39,34 +56,53 @@ export const getProfileController = asyncHandler(async (req, res, _next) => {
   });
 });
 
-export const changePasswordController = asyncHandler(
-  async (req, res, _next) => {
-    res
-      .status(200)
-      .json({ success: true, message: "changePassword controller called" });
-  }
-);
+export const changePasswordController = asyncHandler(async (req, res) => {
+  const message = await changePasswordService({
+    userId: req.user.id,
+    ...req.body,
+  });
 
-export const logoutController = asyncHandler(async (req, res, _next) => {
-  res.status(200).json({ success: true, message: "logout controller called" });
+  res.status(200).json({
+    success: true,
+    message,
+  });
 });
 
-export const forgotPasswordController = asyncHandler(
-  async (req, res, _next) => {
-    res
-      .status(200)
-      .json({ success: true, message: "forgotPassword controller called" });
-  }
-);
+export const logoutController = asyncHandler(async (req, res) => {
+  const message = await logoutService(req.user.id);
 
-export const resetPasswordController = asyncHandler(async (req, res, _next) => {
-  res
-    .status(200)
-    .json({ success: true, message: "resetPassword controller called" });
+  res.status(200).json({
+    success: true,
+    message,
+  });
 });
 
-export const refreshTokenController = asyncHandler(async (req, res, _next) => {
-  res
-    .status(200)
-    .json({ success: true, message: "refreshToken controller called" });
+export const forgotPasswordController = asyncHandler(async (req, res) => {
+  const message = await forgotPasswordService(req.body.email);
+
+  res.status(200).json({
+    success: true,
+    message,
+  });
+});
+
+export const resetPasswordController = asyncHandler(async (req, res) => {
+  const message = await resetPasswordService({
+    token: req.query.token,
+    password: req.body.password,
+  });
+
+  res.status(200).json({
+    success: true,
+    message,
+  });
+});
+
+export const refreshTokenController = asyncHandler(async (req, res) => {
+  const tokens = await refreshTokenService(req.body.refreshToken);
+
+  res.status(200).json({
+    success: true,
+    data: tokens,
+  });
 });

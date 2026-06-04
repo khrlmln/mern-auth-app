@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import jwt from "jsonwebtoken";
-import { APP_URL, EMAIL_ADDRESS, SECRET_KEY } from "../config/env.js";
+import { APP_URL, EMAIL_ADDRESS } from "../config/env.js";
 import { User } from "../models/user.model.js";
 import AppError from "../utils/AppError.js";
 import { generateSecureToken } from "../utils/generateToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { generateAccessToken } from "../utils/token.js";
 
 export const registerService = async ({ fullName, email, password }) => {
   const existingUser = await User.findOne({ email });
@@ -75,11 +75,24 @@ export const loginService = async ({ email, password }) => {
     throw new AppError("Email not verified", 403);
   }
 
-  const payload = { id: user._id, role: user.role };
+  const payload = {
+    id: user._id,
+    role: user.role,
+  };
 
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+  const accessToken = generateAccessToken(payload);
 
-  return { accessToken: token };
+  const { rawToken: refreshToken, hashedToken } = generateSecureToken();
+
+  user.refreshToken = hashedToken;
+  user.refreshTokenExpires = Date.now() + 30 * 24 * 60 * 60 * 1000;
+
+  await user.save();
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const verifyEmailService = async (token) => {
@@ -126,12 +139,221 @@ export const verifyEmailService = async (token) => {
   return "Email verified successfully";
 };
 
-export const changePasswordService = async () => {};
+export const resendVerificationEmailService = async (email) => {
+  const user = await User.findOne({ email });
 
-export const logoutService = async () => {};
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
-export const forgotPasswordService = async () => {};
+  if (user.isEmailVerified) {
+    throw new AppError("Email already verified", 400);
+  }
 
-export const resetPasswordService = async () => {};
+  const { rawToken, hashedToken } = generateSecureToken();
 
-export const refreshTokenService = async () => {};
+  user.emailVerificationToken = hashedToken;
+
+  user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
+
+  await user.save();
+
+  const verificationUrl = `${APP_URL}/api/v1/auth/verify-email?token=${rawToken}`;
+
+  await sendEmail({
+    from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+    to: user.email,
+    subject: "Verify Your Email Address",
+    html: `
+        <h1>Verify Your Email</h1>
+        <a href="${verificationUrl}">
+          Verify Email
+        </a>
+      `,
+  });
+
+  return "Verification email sent successfully";
+};
+
+export const changePasswordService = async ({
+  userId,
+  currentPassword,
+  newPassword,
+}) => {
+  const user = await User.findById(userId).select("+password");
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const isPasswordMatched = await bcrypt.compare(
+    currentPassword,
+    user.password
+  );
+
+  if (!isPasswordMatched) {
+    throw new AppError("Current password is incorrect", 401);
+  }
+
+  const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+  if (isSamePassword) {
+    throw new AppError(
+      "New password must be different from current password",
+      400
+    );
+  }
+
+  user.password = await bcrypt.hash(newPassword, 12);
+
+  user.passwordChangedAt = new Date();
+
+  await user.save();
+
+  return "Password changed successfully";
+};
+
+export const logoutService = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.refreshToken = undefined;
+
+  await user.save();
+
+  return "Logged out successfully";
+};
+
+export const forgotPasswordService = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return "If an account exists, a password reset link has been sent.";
+  }
+
+  const { rawToken, hashedToken } = generateSecureToken();
+
+  user.passwordResetToken = hashedToken;
+
+  user.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+
+  await user.save();
+
+  const resetUrl = `${APP_URL}/api/v1/auth/reset-password?token=${rawToken}`;
+
+  try {
+    await sendEmail({
+      from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+      to: user.email,
+      subject: "Reset Your Password",
+      html: `
+        <h1>Password Reset Request</h1>
+
+        <p>Hello ${user.fullName},</p>
+
+        <p>
+          Click the link below to reset your password:
+        </p>
+
+        <a href="${resetUrl}">
+          Reset Password
+        </a>
+
+        <p>
+          This link will expire in 15 minutes.
+        </p>
+
+        <p>
+          If you didn't request this,
+          you can safely ignore this email.
+        </p>
+      `,
+    });
+  } catch {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save();
+
+    throw new AppError("Failed to send password reset email", 500);
+  }
+
+  return "If an account exists, a password reset link has been sent.";
+};
+
+export const resetPasswordService = async ({ token, password }) => {
+  if (!token) {
+    throw new AppError("Reset token is required", 400);
+  }
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: {
+      $gt: Date.now(),
+    },
+  });
+
+  if (!user) {
+    throw new AppError("Invalid or expired reset token", 400);
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  user.password = hashedPassword;
+
+  user.passwordResetToken = undefined;
+  user.refreshToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  user.passwordChangedAt = new Date();
+
+  await user.save();
+
+  return "Password reset successfully";
+};
+
+export const refreshTokenService = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new AppError("Refresh token is required", 400);
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(refreshToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    refreshToken: hashedToken,
+    refreshTokenExpires: {
+      $gt: Date.now(),
+    },
+  });
+
+  if (!user) {
+    throw new AppError("Invalid refresh token", 401);
+  }
+
+  const payload = {
+    id: user._id,
+    role: user.role,
+  };
+
+  const accessToken = generateAccessToken(payload);
+
+  const { rawToken: newRefreshToken, hashedToken: newHashedToken } =
+    generateSecureToken();
+
+  user.refreshToken = newHashedToken;
+
+  await user.save();
+
+  return {
+    accessToken,
+    refreshToken: newRefreshToken,
+  };
+};

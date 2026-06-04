@@ -35,6 +35,10 @@ const userSchema = new Schema(
     passwordResetToken: { type: String, select: false },
     passwordResetExpires: { type: Date, select: false },
     refreshToken: { type: String, select: false },
+    refreshTokenExpires: {
+      type: Date,
+      select: false,
+    },
     passwordChangedAt: { type: Date, select: false },
   },
   {

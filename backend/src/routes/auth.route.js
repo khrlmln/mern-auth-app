@@ -8,6 +8,7 @@ import {
   logoutController,
   refreshTokenController,
   registerController,
+  resendVerificationEmailController,
   resetPasswordController,
   verifyEmailController,
 } from "../controllers/auth.controller.js";
@@ -34,11 +35,12 @@ authRoute.get("/profile", authenticate, getProfileController);
 
 authRoute.patch(
   "/change-password",
+  authenticate,
   validate(changePasswordSchema),
   changePasswordController
 );
 
-authRoute.post("/logout", logoutController);
+authRoute.post("/logout", authenticate, logoutController);
 
 authRoute.post(
   "/forgot-password",
@@ -51,6 +53,8 @@ authRoute.post(
   validate(resetPasswordSchema),
   resetPasswordController
 );
+
+authRoute.post("/resend-verification-email", resendVerificationEmailController);
 
 authRoute.post("/refresh-token", refreshTokenController);
 

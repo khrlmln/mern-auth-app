@@ -15,7 +15,18 @@ const authenticate = async (req, res, next) => {
 
     const payload = jwt.verify(token, SECRET_KEY);
 
-    const user = await User.findById(payload.id);
+    const user = await User.findById(payload.id).select("+passwordChangedAt");
+
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    if (
+      user.passwordChangedAt &&
+      payload.iat * 1000 < user.passwordChangedAt.getTime()
+    ) {
+      throw new AppError("Password recently changed. Please login again.", 401);
+    }
 
     req.user = user;
 
