@@ -3,11 +3,16 @@ import connectToDB from "./src/config/database.js";
 import { PORT } from "./src/config/env.js";
 
 const startServer = async () => {
-  await connectToDB();
+  try {
+    await connectToDB();
 
-  app.listen(PORT, () => {
-    console.log(`api is running on http://localhost:${PORT}`);
-  });
+    app.listen(PORT, () => {
+      console.log(`api is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 };
 
 startServer();

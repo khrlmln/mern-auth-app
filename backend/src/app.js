@@ -1,10 +1,20 @@
+import cors from "cors";
 import express, { json } from "express";
+import helmet from "helmet";
+import { CLIENT_URL } from "./config/env.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import pageNotFoundMiddleware from "./middlewares/page-not-found.middleware.js";
 import authRoute from "./routes/auth.route.js";
 
 const app = express();
 app.use(json());
+app.use(helmet());
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to Authentication API");

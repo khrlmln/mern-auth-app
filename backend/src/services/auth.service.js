@@ -208,6 +208,9 @@ export const changePasswordService = async ({
 
   user.passwordChangedAt = new Date();
 
+  user.refreshToken = undefined;
+  user.refreshTokenExpires = undefined;
+
   await user.save();
 
   return "Password changed successfully";
@@ -221,6 +224,7 @@ export const logoutService = async (userId) => {
   }
 
   user.refreshToken = undefined;
+  user.refreshTokenExpires = undefined;
 
   await user.save();
 
@@ -308,6 +312,7 @@ export const resetPasswordService = async ({ token, password }) => {
 
   user.passwordResetToken = undefined;
   user.refreshToken = undefined;
+  user.refreshTokenExpires = undefined;
   user.passwordResetExpires = undefined;
 
   user.passwordChangedAt = new Date();
@@ -349,6 +354,7 @@ export const refreshTokenService = async (refreshToken) => {
     generateSecureToken();
 
   user.refreshToken = newHashedToken;
+  user.refreshTokenExpires = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
   await user.save();
 

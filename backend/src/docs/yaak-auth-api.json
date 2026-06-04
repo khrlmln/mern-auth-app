@@ -1,0 +1,345 @@
+{
+  "yaakVersion": "2026.3.1",
+  "yaakSchema": 4,
+  "timestamp": "2026-06-04T16:12:51.549454936",
+  "resources": {
+    "workspaces": [
+      {
+        "model": "workspace",
+        "id": "wk_h66C7VpQmf",
+        "createdAt": "2026-05-29T16:16:24.838162181",
+        "updatedAt": "2026-05-29T16:16:24.838162932",
+        "authentication": {},
+        "authenticationType": null,
+        "description": "",
+        "headers": [],
+        "name": "mern-auth-api",
+        "encryptionKeyChallenge": null,
+        "settingValidateCertificates": true,
+        "settingFollowRedirects": true,
+        "settingRequestTimeout": 0,
+        "settingDnsOverrides": []
+      }
+    ],
+    "environments": [],
+    "folders": [
+      {
+        "model": "folder",
+        "id": "fl_LcXswe23hn",
+        "createdAt": "2026-05-30T11:32:21.268340869",
+        "updatedAt": "2026-05-30T11:32:21.268341512",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "description": "",
+        "headers": [],
+        "name": "auth routes",
+        "sortPriority": -1780140741267.0
+      }
+    ],
+    "httpRequests": [
+      {
+        "model": "http_request",
+        "id": "rq_FRoGvaGZKV",
+        "createdAt": "2026-06-04T03:04:35.073994361",
+        "updatedAt": "2026-06-04T15:10:52.678813450",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"email\": \"mail@proton.me\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "9Upy33ftcq"
+          }
+        ],
+        "method": "POST",
+        "name": "resend verification email",
+        "sortPriority": -1780071471185.996,
+        "url": "${[ base_url ]}/api/v1/auth/resend-verification-email",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_keyPQQg2C6",
+        "createdAt": "2026-05-30T11:40:01.276163654",
+        "updatedAt": "2026-06-04T15:13:56.794672030",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"refreshToken\": \"7a6682823fee59b6dbfb93b4e15ebfa01e0b1c9242c98f670030ceb18084c336\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "diyA8qx6Yc"
+          }
+        ],
+        "method": "POST",
+        "name": "refresh token",
+        "sortPriority": -1780071471185.991,
+        "url": "${[ base_url ]}/api/v1/auth/refresh-token",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_2aF2jrk7i6",
+        "createdAt": "2026-05-30T11:39:40.852202212",
+        "updatedAt": "2026-06-04T15:15:27.286457801",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": "bearer",
+        "body": {
+          "text": "{\n  \"password\": \"admin1234\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "dyJq2pqgxd"
+          }
+        ],
+        "method": "POST",
+        "name": "reset password",
+        "sortPriority": -1780071471185.992,
+        "url": "${[ base_url ]}/api/v1/auth/reset-password?token=bfb29fe527149427b450ee97b2105c5608b76aa190922f67b07261817b8bf633",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_ej84SATQfN",
+        "createdAt": "2026-05-30T11:39:21.119463689",
+        "updatedAt": "2026-06-03T15:59:07.351881710",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\"email\": \"mail@proton.me\"}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "SEPv2cu3fu"
+          }
+        ],
+        "method": "POST",
+        "name": "forgot password",
+        "sortPriority": -1780071471185.993,
+        "url": "${[ base_url ]}/api/v1/auth/forgot-password",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_zsDbRyS7U9",
+        "createdAt": "2026-05-30T11:38:56.930460700",
+        "updatedAt": "2026-06-04T15:14:21.371726118",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMjE5NGNhZjRkM2RjNDhlMjZhMjA3MyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzgwNTg2MDM4LCJleHAiOjE3ODA1ODY5Mzh9.pI2IoMUxIZ2ADDDbPGVJdojndOt0zfW7VHbkvjCcPfM"
+        },
+        "authenticationType": "bearer",
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "POST",
+        "name": "logout",
+        "sortPriority": -1780071471185.994,
+        "url": "${[ base_url ]}/api/v1/auth/logout",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_rL8xjMBbiA",
+        "createdAt": "2026-05-30T11:38:30.822983243",
+        "updatedAt": "2026-06-04T15:13:12.640274931",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMjE5NGNhZjRkM2RjNDhlMjZhMjA3MyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzgwNTg1OTE2LCJleHAiOjE3ODA1ODY4MTZ9.pvQ-xowcjRn19QKRQNcpE-2Fnov6vCIyLzr6L6xcuZk"
+        },
+        "authenticationType": "bearer",
+        "body": {
+          "text": "{\n  \"currentPassword\": \"useradmin\",\n  \"newPassword\": \"khrlmln123\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "aAGkSccpDw"
+          }
+        ],
+        "method": "PATCH",
+        "name": "change password",
+        "sortPriority": -1780071471185.995,
+        "url": "${[ base_url ]}/api/v1/auth/change-password",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_qaTCZzJeFM",
+        "createdAt": "2026-05-30T11:37:44.297934137",
+        "updatedAt": "2026-06-04T15:14:09.516753500",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {
+          "disabled": false,
+          "prefix": "Bearer",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMjE5NGNhZjRkM2RjNDhlMjZhMjA3MyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzgwNTg2MDM4LCJleHAiOjE3ODA1ODY5Mzh9.pI2IoMUxIZ2ADDDbPGVJdojndOt0zfW7VHbkvjCcPfM"
+        },
+        "authenticationType": "bearer",
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "get profile",
+        "sortPriority": -1780071471185.996,
+        "url": "${[ base_url ]}/api/v1/auth/profile",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_A5EfzLeeKo",
+        "createdAt": "2026-05-30T11:37:09.256405556",
+        "updatedAt": "2026-06-04T15:11:33.162804995",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "verify email",
+        "sortPriority": -1780071471185.997,
+        "url": "${[ base_url ]}/api/v1/auth/verify-email?token=0daf937fb2fa3e634b9a1b63d15a0a1483ebf043147c245534a233fadde5c316",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_TUaV3ntR7B",
+        "createdAt": "2026-05-30T11:34:47.631408252",
+        "updatedAt": "2026-06-04T15:15:40.767966",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": "none",
+        "body": {
+          "text": "{\n  \"email\": \"mail@proton.me\",\n  \"password\": \"admin1234\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "76GftWYNGp"
+          }
+        ],
+        "method": "POST",
+        "name": "login",
+        "sortPriority": -1780071471185.998,
+        "url": "${[ base_url ]}/api/v1/auth/login",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_eRKK53wXU5",
+        "createdAt": "2026-05-30T11:32:25.053608970",
+        "updatedAt": "2026-06-04T15:09:36.187899917",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": "fl_LcXswe23hn",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"mail@proton.me\",\n  \"password\": \"useradmin\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "WJ3MuGRf9c"
+          }
+        ],
+        "method": "POST",
+        "name": "register",
+        "sortPriority": -1780071471185.999,
+        "url": "${[ base_url ]}/api/v1/auth/register",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_qVNxCGGZHd",
+        "createdAt": "2026-05-29T17:21:51.093423525",
+        "updatedAt": "2026-05-29T17:22:18.954755660",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "health check",
+        "sortPriority": -1780071471185.999,
+        "url": "${[ base_url ]}/health",
+        "urlParameters": []
+      },
+      {
+        "model": "http_request",
+        "id": "rq_t9Jhx7qzZo",
+        "createdAt": "2026-05-29T16:17:51.187464385",
+        "updatedAt": "2026-05-29T17:21:39.867495446",
+        "workspaceId": "wk_h66C7VpQmf",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "root",
+        "sortPriority": -1780071471186.0,
+        "url": "${[ base_url ]}/",
+        "urlParameters": []
+      }
+    ],
+    "grpcRequests": [],
+    "websocketRequests": []
+  }
+}

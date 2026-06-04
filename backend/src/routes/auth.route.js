@@ -19,7 +19,9 @@ import {
   changePasswordSchema,
   forgotPasswordSchema,
   loginSchema,
+  refreshTokenSchema,
   registerSchema,
+  resendVerificationSchema,
   resetPasswordSchema,
 } from "../validators/auth.validator.js";
 
@@ -54,8 +56,16 @@ authRoute.post(
   resetPasswordController
 );
 
-authRoute.post("/resend-verification-email", resendVerificationEmailController);
+authRoute.post(
+  "/resend-verification-email",
+  validate(resendVerificationSchema),
+  resendVerificationEmailController
+);
 
-authRoute.post("/refresh-token", refreshTokenController);
+authRoute.post(
+  "/refresh-token",
+  validate(refreshTokenSchema),
+  refreshTokenController
+);
 
 export default authRoute;
