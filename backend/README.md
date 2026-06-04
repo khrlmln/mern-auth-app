@@ -207,7 +207,7 @@ server.js
 
 ## Environment Variables
 
-Create a `.env` file in the root directory.
+Rename a `.env.example` file to `.env` in the root directory.
 
 ```env
 PORT=3000
@@ -251,10 +251,6 @@ cd mern-auth-app
 ```bash
 npm install
 ```
-
-### Configure Environment Variables
-
-Rename a `.env.example` file to `.env`.
 
 ### Run Development Server
 
