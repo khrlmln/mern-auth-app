@@ -8,3 +8,4 @@ export const DB_URL = process.env.DB_URL;
 export const SECRET_KEY = process.env.SECRET_KEY;
 export const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 export const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD;
+export const ARCJET_KEY = process.env.ARCJET_KEY;

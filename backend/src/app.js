@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { json } from "express";
 import helmet from "helmet";
 import { CLIENT_URL } from "./config/env.js";
+import arcjetMiddleware from "./middlewares/arcjet.middleware.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import pageNotFoundMiddleware from "./middlewares/page-not-found.middleware.js";
 import authRoute from "./routes/auth.route.js";
@@ -15,6 +16,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(arcjetMiddleware);
 
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to Authentication API");
