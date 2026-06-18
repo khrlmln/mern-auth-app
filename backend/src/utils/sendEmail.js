@@ -1,16 +1,21 @@
-import nodemailer from "nodemailer";
-import { EMAIL_ADDRESS, GOOGLE_APP_PASSWORD } from "../config/env.js";
+import { Resend } from "resend";
+import { RESEND_API_KEY } from "../config/env.js";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: EMAIL_ADDRESS,
-    pass: GOOGLE_APP_PASSWORD,
-  },
-});
+const resend = new Resend(RESEND_API_KEY);
 
 export const sendEmail = async (mailInfo) => {
-  return transporter.sendMail(mailInfo);
+  const { from, to, subject, html } = mailInfo;
+
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    subject,
+    html,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 };

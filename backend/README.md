@@ -1,8 +1,12 @@
 # MERN Authentication API
 
-A production-inspired Authentication API built with Express.js, MongoDB, JWT, and Nodemailer.
+A production-inspired Authentication API built with Express.js, MongoDB, JWT, and Resend for email sending.
 
 This project demonstrates modern backend development practices including layered architecture, validation, authentication, authorization, email verification, password reset, refresh token rotation, and centralized error handling.
+
+🌐 **Live API:** https://authapi.milankharel.com.np
+
+The API is publicly deployed and available for testing and integration.
 
 ---
 
@@ -70,7 +74,7 @@ This project demonstrates modern backend development practices including layered
 
 ### Email
 
-- Nodemailer
+- Resend
 
 ### Security
 
@@ -87,15 +91,20 @@ src/
 ├── config/
 │   ├── database.js
 │   └── env.js
+│   └── arcjet.js
 │
 ├── controllers/
 │   └── auth.controller.js
 │
+├── docs/
+│   ├── yaak-auth-api.json
+│
 ├── middleware/
+│   ├── arcjet.middleware.js
 │   ├── auth.middleware.js
 │   ├── error.middleware.js
-│   ├── validate.middleware.js
-│   └── asyncHandler.js
+│   ├── page-not-found.middleware.js
+│   └── validate.middleware.js
 │
 ├── models/
 │   └── user.model.js
@@ -108,6 +117,7 @@ src/
 │
 ├── utils/
 │   ├── AppError.js
+│   ├── async-handler.js
 │   ├── generateToken.js
 │   ├── sendEmail.js
 │   └── token.js
@@ -210,24 +220,15 @@ server.js
 Rename a `.env.example` file to `.env` in the root directory.
 
 ```env
-PORT=3000
-
-NODE_ENV=development
-
-MONGO_URI=
-
-JWT_SECRET=
-JWT_EXPIRES_IN=15m
-
-APP_URL=http://localhost:3000
-
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASSWORD=
+PORT=
+APP_URL=
+CLIENT_URL=
+NODE_ENV=
+DB_URL=
+SECRET_KEY=
 EMAIL_ADDRESS=
-
-CLIENT_URL=http://localhost:5173
+RESEND_API_KEY=
+ARCJET_KEY=
 ```
 
 ---

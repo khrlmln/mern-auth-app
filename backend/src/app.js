@@ -8,6 +8,7 @@ import pageNotFoundMiddleware from "./middlewares/page-not-found.middleware.js";
 import authRoute from "./routes/auth.route.js";
 
 const app = express();
+
 app.use(json());
 app.use(helmet());
 app.use(
