@@ -238,7 +238,7 @@ ARCJET_KEY=
 ### Clone Repository
 
 ```bash
-git clone https://gitlab.com/khrlmln/mern-auth-app.git
+git clone https://github.com/khrlmln/mern-auth-app.git
 ```
 
 ### Navigate Into Project
