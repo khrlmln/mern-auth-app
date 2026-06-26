@@ -27,7 +27,6 @@ export function AuthProvider({ children }) {
           setUser(data.data);
         } catch {
           localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
         }
       }
       setLoading(false);
