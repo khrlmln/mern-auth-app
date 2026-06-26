@@ -1,6 +1,12 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { APP_URL, EMAIL_ADDRESS } from "../config/env.js";
+import {
+  APP_NAME,
+  APP_URL,
+  EMAIL_ADDRESS,
+  REFRESH_TOKEN_TTL_MS,
+  RESET_TOKEN_TTL_MS,
+} from "../config/env.js";
 import { User } from "../models/user.model.js";
 import AppError from "../utils/AppError.js";
 import { generateSecureToken } from "../utils/generateToken.js";
@@ -23,14 +29,14 @@ export const registerService = async ({ fullName, email, password }) => {
     email,
     password: hashedPassword,
     emailVerificationToken: hashedToken,
-    emailVerificationExpires: Date.now() + 24 * 60 * 60 * 1000,
+    emailVerificationExpires: Date.now() + RESET_TOKEN_TTL_MS,
   });
 
-  const verificationUrl = `${APP_URL}/api/v1/auth/verify-email?token=${rawToken}`;
+  const verificationUrl = `${APP_URL}/verify-email?token=${rawToken}`;
 
   try {
     await sendEmail({
-      from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+      from: `${APP_NAME} <${EMAIL_ADDRESS}>`,
       to: email,
       subject: "Verify Your Email Address",
       html: `
@@ -47,7 +53,7 @@ export const registerService = async ({ fullName, email, password }) => {
         </a>
 
         <p>
-          This link will expire in 24 hours.
+          This link will expire in 15 minutes.
         </p>
       `,
     });
@@ -85,7 +91,7 @@ export const loginService = async ({ email, password }) => {
   const { rawToken: refreshToken, hashedToken } = generateSecureToken();
 
   user.refreshToken = hashedToken;
-  user.refreshTokenExpires = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  user.refreshTokenExpires = Date.now() + REFRESH_TOKEN_TTL_MS;
 
   await user.save();
 
@@ -121,7 +127,7 @@ export const verifyEmailService = async (token) => {
 
   try {
     await sendEmail({
-      from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+      from: `${APP_NAME} <${EMAIL_ADDRESS}>`,
       to: user.email,
       subject: "Welcome!",
       html: `
@@ -143,7 +149,7 @@ export const resendVerificationEmailService = async (email) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new AppError("User not found", 404);
+    throw new AppError("Invalid email or password", 401);
   }
 
   if (user.isEmailVerified) {
@@ -154,14 +160,14 @@ export const resendVerificationEmailService = async (email) => {
 
   user.emailVerificationToken = hashedToken;
 
-  user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
+  user.emailVerificationExpires = Date.now() + RESET_TOKEN_TTL_MS;
 
   await user.save();
 
-  const verificationUrl = `${APP_URL}/api/v1/auth/verify-email?token=${rawToken}`;
+  const verificationUrl = `${APP_URL}/verify-email?token=${rawToken}`;
 
   await sendEmail({
-    from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+    from: `${APP_NAME} <${EMAIL_ADDRESS}>`,
     to: user.email,
     subject: "Verify Your Email Address",
     html: `
@@ -242,15 +248,15 @@ export const forgotPasswordService = async (email) => {
 
   user.passwordResetToken = hashedToken;
 
-  user.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+  user.passwordResetExpires = Date.now() + RESET_TOKEN_TTL_MS;
 
   await user.save();
 
-  const resetUrl = `${APP_URL}/api/v1/auth/reset-password?token=${rawToken}`;
+  const resetUrl = `${APP_URL}/reset-password?token=${rawToken}`;
 
   try {
     await sendEmail({
-      from: `Milan Kharel <${EMAIL_ADDRESS}>`,
+      from: `${APP_NAME} <${EMAIL_ADDRESS}>`,
       to: user.email,
       subject: "Reset Your Password",
       html: `
@@ -354,7 +360,7 @@ export const refreshTokenService = async (refreshToken) => {
     generateSecureToken();
 
   user.refreshToken = newHashedToken;
-  user.refreshTokenExpires = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  user.refreshTokenExpires = Date.now() + REFRESH_TOKEN_TTL_MS;
 
   await user.save();
 

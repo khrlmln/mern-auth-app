@@ -1,3 +1,4 @@
+import { REFRESH_TOKEN_TTL_MS } from "../config/env.js";
 import {
   changePasswordService,
   forgotPasswordService,
@@ -21,12 +22,17 @@ export const registerController = asyncHandler(async (req, res, _next) => {
 });
 
 export const loginController = asyncHandler(async (req, res, _next) => {
-  const user = await loginService(req.body);
+  const { accessToken, refreshToken } = await loginService(req.body);
 
-  res.status(200).json({
-    success: true,
-    data: user,
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: REFRESH_TOKEN_TTL_MS,
+    path: "/",
   });
+
+  res.status(200).json({ success: true, data: { accessToken } });
 });
 
 export const verifyEmailController = asyncHandler(async (req, res) => {
@@ -71,10 +77,14 @@ export const changePasswordController = asyncHandler(async (req, res) => {
 export const logoutController = asyncHandler(async (req, res) => {
   const message = await logoutService(req.user.id);
 
-  res.status(200).json({
-    success: true,
-    message,
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    path: "/",
   });
+
+  res.status(200).json({ success: true, message });
 });
 
 export const forgotPasswordController = asyncHandler(async (req, res) => {
@@ -99,10 +109,23 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
 });
 
 export const refreshTokenController = asyncHandler(async (req, res) => {
-  const tokens = await refreshTokenService(req.body.refreshToken);
+  const token = req.cookies.refreshToken;
 
-  res.status(200).json({
-    success: true,
-    data: tokens,
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Refresh token missing" });
+  }
+
+  const { accessToken, refreshToken } = await refreshTokenService(token);
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: REFRESH_TOKEN_TTL_MS,
+    path: "/",
   });
+
+  res.status(200).json({ success: true, data: { accessToken } });
 });

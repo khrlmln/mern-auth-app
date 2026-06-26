@@ -1,5 +1,6 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { json } from "express";
+import express from "express";
 import helmet from "helmet";
 import { CLIENT_URL } from "./config/env.js";
 import arcjetMiddleware from "./middlewares/arcjet.middleware.js";
@@ -9,7 +10,7 @@ import authRoute from "./routes/auth.route.js";
 
 const app = express();
 
-app.use(json());
+app.use(express.json());
 app.use(helmet());
 app.use(
   cors({
@@ -17,6 +18,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 app.use(arcjetMiddleware);
 
 app.get("/", (req, res) => {
