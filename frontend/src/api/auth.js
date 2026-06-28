@@ -1,10 +1,10 @@
 import api, { publicApi } from "./axios";
 
 // POST /register — { fullName, email, password }
-export const register = (body) => api.post("/register", body);
+export const register = (body) => publicApi.post("/register", body);
 
 // POST /login — { email, password } → { accessToken, refreshToken }
-export const login = (body) => api.post("/login", body);
+export const login = (body) => publicApi.post("/login", body);
 
 // POST /logout — requires Bearer token
 export const logout = () => api.post("/logout");
